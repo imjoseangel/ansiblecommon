@@ -1,0 +1,38 @@
+---
+repos:
+  - repo: local
+    hooks:
+      - id: ansible-lint
+        name: Ansible Linter
+        description: This hook runs ansible-lint.
+        entry: ansible-lint -x 703,701,306,301,204
+        language: python
+        files: \.(yaml|yml)$
+      - id: python-lint
+        name: Python Linter
+        description: This hook runs pylint.
+        entry: pylint
+        language: python
+        files: \.(py)$
+      - id: yamllint
+        name: YAML Linter
+        args: ['--strict']
+        entry: yamllint
+        language: system
+        types: [file, yaml]
+      - id: ansible-vault
+        name: Verify if all ansible-vault files are encrypted
+        entry: python hooks/check_vault.py
+        language: system
+      - id: detect-secrets
+        name: Detect Secrets
+        description: This hook detects and prevents high entropy strings from entering the codebase.
+        entry: detect-secrets-hook
+        language: system
+      - id: renolint
+        name: Verify Release Notes File
+        description: Check some common mistakes on Reno files
+        entry: reno lint
+        pass_filenames: false
+        always_run: true
+        language: system
