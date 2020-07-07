@@ -1,0 +1,66 @@
+name: ReleaseBuildCollection
+on:
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+    - name: Checkout release branch
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+
+    - name: Get current version
+      id: cversion
+      run: echo "::set-output name=version::$(grep version galaxy.yml | awk -F'"' '{ print $2 }')"
+
+    - name: display value
+      run: echo ${{steps.cversion.outputs.version}}
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ansible
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Create ansible collection package
+      run: ansible-galaxy collection build
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{steps.cversion.outputs.version}}
+        release_name: Release v${{steps.cversion.outputs.version}}
+        body: |
+          # Ansible Collection: imjoseangel.general
+          ![ReleaseBuildCollection](https://github.com/imjoseangel/generalcollection/workflows/ReleaseBuildCollection/badge.svg)
+
+          Install with:
+          ```sh
+          ansible-galaxy collection install -r requirements.yml -f
+          ```
+
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: imjoseangel-general-${{steps.cversion.outputs.version}}.tar.gz
+        asset_name: imjoseangel-general-${{steps.cversion.outputs.version}}.tar.gz
+        asset_content_type: application/tar+gzip

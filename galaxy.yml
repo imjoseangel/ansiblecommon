@@ -1,0 +1,16 @@
+namespace: "imjoseangel"
+name: "common"
+version: "1.0.0"
+readme: "README.md"
+authors:
+    - "Jose Angel Munoz <josea.munoz@gmail.com>"
+license:
+    - "MIT"
+tags:
+    - imjoseangel
+    - common
+    - collection
+    - linux
+    - windows
+    - util
+repository: "https://www.github.com/imjoseangel/ansiblecommon"
