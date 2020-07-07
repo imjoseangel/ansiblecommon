@@ -1,0 +1,26 @@
+---
+- name: Copy file
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  pre_tasks:
+
+    - name: Set global fact for base dir
+      set_fact:
+        play_dir: "{{ playbook_dir | dirname }}"
+
+    - name: Include pre-tasks
+      include_tasks: "{{ play_dir }}/pretasks.yml"
+
+  tasks:
+
+    - name: Deploy files
+      include_role:
+        name: imjoseangel.common.toolbox
+      vars:
+        toolbox: "{{ toolboxdeploy }}"
+        action_util: deploy
+      loop: "{{ toolbox_configuration | flatten(levels=1) }}"
+      loop_control:
+        loop_var: toolboxdeploy

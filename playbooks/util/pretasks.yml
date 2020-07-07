@@ -1,0 +1,47 @@
+---
+- name: Assert variables
+  assert:
+    that: "{{ extravars }} is defined"
+    msg: "{{ extravars  }} is not defined"
+  loop: "{{ assert_vars | default([]) + ['env'] }}"
+  loop_control:
+    loop_var: extravars
+
+- name: Set global fact for base dir
+  set_fact:
+    base_dir: "{{ lookup('env','PWD') }}"
+    item_dir: "{{ playbook_dir | basename }}"
+
+- name: Read all variables
+  block:
+
+    - name: Get stats on all variable files
+      stat:
+        path: "{{ item }}"
+      with_fileglob:
+        - "{{ base_dir }}/vars/global/common.yml"
+        - "{{ base_dir }}/vars/global/secrets.vault"
+        - "{{ base_dir }}/vars/global/{{ item_dir }}/common.yml"
+        - "{{ base_dir }}/vars/{{ env }}/common.yml"
+        - "{{ base_dir }}/vars/{{ env }}/secrets.vault"
+        - "{{ base_dir }}/vars/{{ env }}/{{ item_dir }}/common.yml"
+        - "{{ base_dir }}/vars/{{ env }}/{{ item_dir }}/secrets.vault"
+      register: _variables_stat
+
+    - name: Include all variable files (only when found)
+      include_vars: "{{ item.stat.path }}"
+      when: item.stat.exists
+      loop: "{{ _variables_stat.results | flatten(levels=1) }}"
+      loop_control:
+        label: "{{ item.stat.path }}"
+      no_log: true
+
+    - name: Collect only facts returned by facter
+      setup:
+        gather_subset:
+          - 'min'
+      when: enable_gather_facts | default(false) | bool
+
+  run_once: true
+  delegate_to: localhost
+  become: false

@@ -1,0 +1,4 @@
+---
+- name: Debug Dictionary
+  debug:
+    msg: "{{ toolbox }}"

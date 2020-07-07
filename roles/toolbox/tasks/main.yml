@@ -1,0 +1,37 @@
+---
+- name: Fail if ansible version is lower than "{{ role_ansibleversion }}"
+  fail:
+    msg: "Your Ansible version is {{ ansible_version.full }} and must be greater than {{ role_ansibleversion }}"
+  when: ansible_version.full < role_ansibleversion
+
+- name: Validate action items
+  fail:
+    msg: "Action {{ action_toolbox }} is not defined"
+  when: action_toolbox not in actions_toolbox
+  run_once: true
+
+- name: Assert main variable is a dictionary
+  assert:
+    that:
+      - toolbox is defined
+      - toolbox | type_debug == "dict"
+  when: action_toolbox not in actions_excluded
+  run_once: true
+
+- name: Assert role variables
+  assert:
+    that:
+      - "{{ action_var }} is defined"
+      - "{{ action_var }} | length > 0"
+    msg: "{{ action_var  }} is not defined"
+  with_items: "{{ actions_vars[action_toolbox] | flatten(levels=1) }}"
+  loop_control:
+    loop_var: action_var
+
+- name: Action item
+  include_tasks: "{{ actionitem }}.yml"
+  vars:
+    attribute: "{{ actionitem }}"
+  loop: "{{ actions_toolbox[action_toolbox] | flatten(levels=1) }}"
+  loop_control:
+    loop_var: actionitem

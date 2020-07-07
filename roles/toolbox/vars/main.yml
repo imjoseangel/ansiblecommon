@@ -1,0 +1,11 @@
+---
+actions_toolbox:
+  deploy:
+    - copyfile
+
+actions_vars:
+  deploy:
+    - toolbox.name
+
+actions_excluded:
+  - list
