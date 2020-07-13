@@ -44,8 +44,8 @@ jobs:
         tag_name: v${{steps.cversion.outputs.version}}
         release_name: Release v${{steps.cversion.outputs.version}}
         body: |
-          # Ansible Collection: imjoseangel.general
-          ![ReleaseBuildCollection](https://github.com/imjoseangel/generalcollection/workflows/ReleaseBuildCollection/badge.svg)
+          # Ansible Collection: imjoseangel.common
+          ![ReleaseBuildCollection](https://github.com/imjoseangel/ansiblecommon/workflows/ReleaseBuildCollection/badge.svg)
 
           Install with:
           ```sh
@@ -61,6 +61,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: imjoseangel-general-${{steps.cversion.outputs.version}}.tar.gz
-        asset_name: imjoseangel-general-${{steps.cversion.outputs.version}}.tar.gz
+        asset_path: imjoseangel-common-${{steps.cversion.outputs.version}}.tar.gz
+        asset_name: imjoseangel-common-${{steps.cversion.outputs.version}}.tar.gz
         asset_content_type: application/tar+gzip
