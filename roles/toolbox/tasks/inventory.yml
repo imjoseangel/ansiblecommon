@@ -1,0 +1,11 @@
+---
+- name: Add linux servers to inventory
+  add_host:
+    name: "{{ linuxinventory.name }}"
+    ansible_host: "{{ linuxinventory.ipaddress }}"
+    ansible_user: "{{ linuxinventory.username }}"
+    ansible_python_interpreter: "/usr/bin/env python3"
+    groups: linuxadhoc
+  loop: "{{ toolbox.inventory | flatten(levels=1) }}"
+  loop_control:
+    loop_var: linuxinventory

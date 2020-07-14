@@ -1,5 +1,5 @@
 ---
-- name: Copy file
+- name: Create inventory
   hosts: localhost
   connection: local
   gather_facts: false
@@ -12,15 +12,34 @@
 
     - name: Include pre-tasks
       include_tasks: "{{ play_dir }}/pretasks.yml"
+      vars:
+        assert_vars:
+          - filename
+          - destname
 
   tasks:
 
-    - name: Deploy files
+    - name: Create inventory
       include_role:
-        name: imjoseangel.common.toolbox
+        name: toolbox
       vars:
-        toolbox: "{{ toolboxdeploy }}"
-        action_util: deploy
-      loop: "{{ toolbox_configuration | flatten(levels=1) }}"
-      loop_control:
-        loop_var: toolboxdeploy
+        toolbox:
+          inventory: "{{ common.inventory }}"
+        action_toolbox: doinventory
+
+- name: Copy file
+  hosts: linuxadhoc
+  gather_facts: false
+
+
+  tasks:
+
+    - name: Copy single file to servers
+      include_role:
+        name: toolbox
+      vars:
+        toolbox:
+          deploy:
+            name: "{{ filename | default() }}"
+            destination: "{{ destname | default() }}"
+        action_toolbox: deploy
