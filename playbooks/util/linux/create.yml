@@ -12,6 +12,10 @@
 
     - name: Include pre-tasks
       include_tasks: "{{ play_dir }}/pretasks.yml"
+      vars:
+        assert_vars:
+          - filename
+          - destname
 
   tasks:
 
@@ -30,5 +34,12 @@
 
   tasks:
 
-    - name: Ping
-      ping:
+    - name: Copy single file to servers
+      include_role:
+        name: toolbox
+      vars:
+        toolbox:
+          deploy:
+            name: "{{ filename | default() }}"
+            destination: "{{ destname | default() }}"
+        action_toolbox: deploy

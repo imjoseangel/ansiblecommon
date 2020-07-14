@@ -1,4 +1,26 @@
 ---
-- name: Debug Dictionary
-  debug:
-    msg: "{{ toolbox }}"
+- name: Copy block
+  block:
+
+    - name: Check if file exists locally
+      stat:
+        path: "{{ toolbox.deploy.name }}"
+      register: fileoutput
+      delegate_to: localhost
+
+    - name: Assert file exists
+      assert:
+        that: "{{ fileoutput.stat.exists }}"
+        msg: "{{ toolbox.deploy.name }} doesn't exist"
+
+    - name: Copy single file with owner and permissions
+      copy:
+        src: "{{ toolbox.deploy.name }}"
+        dest: "{{ toolbox.deploy.destination }}"
+        mode: "0644"
+
+  when:
+    - toolbox.deploy.name is defined
+    - toolbox.deploy.destination is defined
+    - toolbox.deploy.name | length > 0
+    - toolbox.deploy.destination | length > 0

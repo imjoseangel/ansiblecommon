@@ -9,7 +9,7 @@ actions_vars:
   doinventory:
     - toolbox.inventory
   deploy:
-    - toolbox.name
+    - toolbox.deploy
 
 actions_excluded:
   - list
