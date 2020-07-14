@@ -5,7 +5,7 @@ actions_toolbox:
   doinventory:
     - inventory
   deploy:
-    - copyfile
+    - copylocal
 
 actions_vars:
   pingonly: []
