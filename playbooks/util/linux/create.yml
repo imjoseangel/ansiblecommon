@@ -15,7 +15,6 @@
       vars:
         assert_vars:
           - filename
-          - destname
 
   tasks:
 
@@ -24,7 +23,7 @@
         name: toolbox
       vars:
         toolbox:
-          inventory: "{{ common.inventory }}"
+          inventory: "{{ common.raspi.inventory | default() }}"
         action_toolbox: doinventory
 
 - name: Copy file
@@ -41,5 +40,5 @@
         toolbox:
           deploy:
             name: "{{ filename | default() }}"
-            destination: "{{ destname | default() }}"
+            destination: "{{ hostvars.localhost.common.raspi.deploy.destdir | default() }}"
         action_toolbox: deploy

@@ -1,0 +1,3 @@
+---
+- name: Ping host for testing
+  ping:

@@ -1,0 +1,12 @@
+---
+- name: Copy single file with owner and permissions
+  get_url:
+    url: "{{ toolbox.deploy.name }}"
+    dest: "{{ toolbox.deploy.destination }}"
+    mode: "0644"
+    validate_certs: false
+  when:
+    - toolbox.deploy.name is defined
+    - toolbox.deploy.destination is defined
+    - toolbox.deploy.name | length > 0
+    - toolbox.deploy.destination | length > 0

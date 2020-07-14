@@ -1,6 +1,9 @@
 ---
 common:
-  inventory:
-    - name: pi
-      ipaddress: 10.100.10.15
-      username: pi
+  raspi:
+    deploy:
+      destdir: /home/pi
+    inventory:
+      - name: pi
+        ipaddress: 10.100.10.15
+        username: pi

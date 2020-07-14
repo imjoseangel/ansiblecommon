@@ -1,15 +1,18 @@
 ---
 actions_toolbox:
+  pingonly:
+    - test
   doinventory:
     - inventory
   deploy:
     - copyfile
 
 actions_vars:
+  pingonly: []
   doinventory:
     - toolbox.inventory
   deploy:
     - toolbox.deploy
 
 actions_excluded:
-  - list
+  - pingonly
