@@ -26,14 +26,13 @@
           inventory: "{{ common.raspi.inventory | default() }}"
         action_toolbox: doinventory
 
-- name: Copy file
+- name: Run {{ doaction | default('pingonly') }} on Linux
   hosts: linuxadhoc
   gather_facts: false
 
-
   tasks:
 
-    - name: Copy single file to servers
+    - name: Running {{ doaction | default('pingonly') }} toolbox
       include_role:
         name: toolbox
       vars:
