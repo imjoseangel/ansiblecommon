@@ -40,8 +40,6 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install Ansible
         run: pip install git+https://github.com/ansible/ansible.git@${{ matrix.ansible }}
-      - name: Install PyTest
-        run: pip install pytest
       - name: Set Environment to use mazer
         run: |
           echo "::set-env name=COLLECTION_COMMAND::mazer"
