@@ -33,29 +33,29 @@ info:
 	@echo "Building collection $(NAMESPACE)-$(NAME)-$(VERSION)"
 	@echo $(foreach PLUGIN_TYPE,$(PLUGIN_TYPES),"\n  $(PLUGIN_TYPE): $(basename $(notdir $(_$(PLUGIN_TYPE))))")
 
-lint: $(MANIFEST) | tests/playbooks/vars/server.yaml
+lint: $(MANIFEST)
 	yamllint -f parsable tests/playbooks
 	ansible-playbook --syntax-check tests/playbooks/*.yaml | grep -v '^$$'
 	black . --diff --check
 
-sanity: $(MANIFEST) | tests/playbooks/vars/server.yaml
+sanity: $(MANIFEST)
 	# Fake a fresh git repo for ansible-test
 	cd $(<D) ; git init ; echo tests > .gitignore ; ansible-test sanity $(SANITY_OPTS) --python $(PYTHON_VERSION)
 
-test: $(MANIFEST) | tests/playbooks/vars/server.yaml
+test: $(MANIFEST)
 	$(PYTEST) $(TEST)
 
-test_%: FORCE $(MANIFEST) | tests/playbooks/vars/server.yaml
+test_%: FORCE $(MANIFEST)
 	pytest -v 'tests/test_playbooks.py::test_playbook[$*]' 'tests/test_playbooks.py::test_check_mode[$*]'
 
 record_%: FORCE $(MANIFEST)
 	$(RM) tests/fixtures/$*-*.yml
 	pytest -v 'tests/test_playbooks.py::test_playbook[$*]' --record
 
-clean_%: FORCE $(MANIFEST) | tests/playbooks/vars/server.yaml
+clean_%: FORCE $(MANIFEST)
 	ansible-playbook --tags teardown,cleanup -i tests/inventory/hosts 'tests/playbooks/$*.yaml'
 
-test-setup: requirements.txt | tests/playbooks/vars/server.yaml
+test-setup: requirements.txt
 	pip install --upgrade pip
 	pip install -r requirements.txt
 
