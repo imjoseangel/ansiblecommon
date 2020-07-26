@@ -34,8 +34,8 @@ info:
 	@echo $(foreach PLUGIN_TYPE,$(PLUGIN_TYPES),"\n  $(PLUGIN_TYPE): $(basename $(notdir $(_$(PLUGIN_TYPE))))")
 
 lint: $(MANIFEST)
-	yamllint -f parsable tests/playbooks
-	ansible-playbook --syntax-check tests/playbooks/*.yaml | grep -v '^$$'
+	yamllint -f parsable playbooks
+	ansible-playbook --syntax-check playbooks/util/linux/*.yml | grep -v '^$$'
 	black . --diff --check
 
 sanity: $(MANIFEST)
