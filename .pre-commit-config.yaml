@@ -8,12 +8,6 @@ repos:
         entry: ansible-lint -x 703,701,306,301,204
         language: python
         files: \.(yaml|yml)$
-      - id: python-lint
-        name: Python Linter
-        description: This hook runs pylint.
-        entry: pylint
-        language: python
-        files: \.(py)$
       - id: yamllint
         name: YAML Linter
         args: ['--strict']

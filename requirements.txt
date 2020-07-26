@@ -1,8 +1,9 @@
-ansible
-ansible-lint
-detect-secrets==0.13.1
-GitPython==3.1.3
-jmespath==0.10.0
-jsonschema==3.2.0
-pip>=20.0
-pre-commit==2.5.1
+ansible_runner
+flake8
+pylint
+pycodestyle
+voluptuous
+yamllint
+pytest>=4.4.0
+pytest-xdist
+vcrpy
