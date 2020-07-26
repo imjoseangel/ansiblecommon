@@ -24,8 +24,6 @@ help:
 	@echo "  sanity         to run santy tests"
 	@echo "  setup          to set up test, lint"
 	@echo "  test-setup     to install test dependencies"
-	@echo "  test_<test>    to run a specific unittest"
-	@echo "  record_<test>  to (re-)record the server answers for a specific test"
 	@echo "  clean_<test>   to run a specific test playbook with the teardown and cleanup tags"
 	@echo "  dist           to build the collection artifact"
 
@@ -44,13 +42,6 @@ sanity: $(MANIFEST)
 
 test: $(MANIFEST)
 	$(PYTEST) $(TEST)
-
-test_%: FORCE $(MANIFEST)
-	pytest -v 'tests/test_playbooks.py::test_playbook[$*]' 'tests/test_playbooks.py::test_check_mode[$*]'
-
-record_%: FORCE $(MANIFEST)
-	$(RM) tests/fixtures/$*-*.yml
-	pytest -v 'tests/test_playbooks.py::test_playbook[$*]' --record
 
 clean_%: FORCE $(MANIFEST)
 	ansible-playbook --tags teardown,cleanup -i tests/inventory/hosts 'tests/playbooks/$*.yaml'
