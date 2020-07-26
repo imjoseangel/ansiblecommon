@@ -6,7 +6,7 @@ import ansible_runner
 
 
 TEST_NAMES = [
-    name[:-5] for name in os.listdir("tests/playbooks") if name.endswith(".yml")
+    name[:-5] for name in os.listdir("playbooks/util/linux") if name.endswith(".yml")
 ]
 
 
