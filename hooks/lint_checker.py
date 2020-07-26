@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 """Checks Linters over all the ansible files found"""
 
-from __future__ import (division, absolute_import, print_function,
-                        unicode_literals)
+from __future__ import division, absolute_import, print_function, unicode_literals
 import importlib
 import os
 import sys
@@ -13,7 +12,7 @@ import ast
 import re
 
 try:
-    importlib.import_module('git')
+    importlib.import_module("git")
     import git
 except ImportError:
     print("GitPython is not installed")
@@ -22,17 +21,18 @@ except ImportError:
 
 class WorkPath:
     """ WorkPath Class """
+
     def __init__(self):
         self._path = os.path.dirname(os.path.realpath(__file__))
         self.repo = git.Repo(search_parent_directories=True)
         self._work_path = self.repo.git.rev_parse("--show-toplevel")
         os.chdir(self._work_path)
         self._config = configparser.ConfigParser()
-        self._config.read(self._path + '/{0}'.format('lint_checker.ini'))
-        if 'branch' in self._config['DEFAULT']:
-            self.branch = self._config['DEFAULT']['branch']
+        self._config.read(self._path + "/{0}".format("lint_checker.ini"))
+        if "branch" in self._config["DEFAULT"]:
+            self.branch = self._config["DEFAULT"]["branch"]
         else:
-            self.branch = 'devel'
+            self.branch = "devel"
 
     def workpath(self):
         """ Return Work Path """
@@ -48,7 +48,7 @@ class WorkPath:
 
     def __gitdownload(self):
 
-        for item in self.repo.index.diff('origin/{0}'.format(self.branch)):
+        for item in self.repo.index.diff("origin/{0}".format(self.branch)):
             if item.a_blob is not None:
                 yield item.a_path
 
@@ -62,19 +62,21 @@ class WorkPath:
 def asterisks():
     """ Show Line """
 
-    print('=' * int(78))
+    print("=" * int(78))
 
 
 def runlinter(binary, args, file):
     """ Run Specific Linter """
     try:
 
-        lint_proc = subprocess.Popen(binary + ' ' + args + ' {0}'.format(file),
-                                     shell=True,
-                                     executable="/bin/bash",
-                                     stdin=None,
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT)
+        lint_proc = subprocess.Popen(
+            binary + " " + args + " {0}".format(file),
+            shell=True,
+            executable="/bin/bash",
+            stdin=None,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
         lint_proc.wait()
 
         return lint_proc
@@ -88,13 +90,12 @@ def getruninfo(runprocess, score):
     """ Get Return Code for the Process """
     runinfo_rc = 0
 
-    for line in iter(runprocess.stdout.readline, b''):
+    for line in iter(runprocess.stdout.readline, b""):
         if score:
-            linter_score = re.search(r"(?P<score>\d?\d\.\d\d)",
-                                     line.decode('UTF-8'))
+            linter_score = re.search(r"(?P<score>\d?\d\.\d\d)", line.decode("UTF-8"))
             if linter_score:
-                print(line.decode('UTF-8'))
-                rate = float(linter_score.group('score'))
+                print(line.decode("UTF-8"))
+                rate = float(linter_score.group("score"))
             else:
                 rate = float(10.0)
 
@@ -102,7 +103,7 @@ def getruninfo(runprocess, score):
                 runinfo_rc = 1
 
         else:
-            print(line.decode('UTF-8'))
+            print(line.decode("UTF-8"))
 
             if runprocess.returncode > 0:
                 runinfo_rc = 1
@@ -125,10 +126,9 @@ def main():
     for filename in project_changes:
         for section in config_sections:
             try:
-                extensions = ast.literal_eval(config_file.get(
-                    section, "files"))
+                extensions = ast.literal_eval(config_file.get(section, "files"))
             except ValueError:
-                print('Error reading extensions, please be sure it is a list')
+                print("Error reading extensions, please be sure it is a list")
             if filename.endswith(tuple(extensions)):
                 file = os.path.join(work_path, filename)
 
@@ -136,18 +136,17 @@ def main():
                 asterisks()
 
                 try:
-                    binary = config_file[section]['binary']
+                    binary = config_file[section]["binary"]
                 except KeyError:
-                    print(
-                        'Cannot read binary section, please be sure it exists')
+                    print("Cannot read binary section, please be sure it exists")
 
                 try:
-                    args = config_file[section]['args']
+                    args = config_file[section]["args"]
                 except KeyError:
-                    args = ''
+                    args = ""
 
                 try:
-                    score = config_file[section]['score']
+                    score = config_file[section]["score"]
                 except KeyError:
                     score = None
 
@@ -160,5 +159,5 @@ def main():
     sys.exit(return_code)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
