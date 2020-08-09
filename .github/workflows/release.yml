@@ -65,7 +65,6 @@ jobs:
             collections:
                 - https://github.com/imjoseangel/ansiblecommon/releases/download/v${{ steps.cversion.outputs.version }}/imjoseangel-common-${{ steps.cversion.outputs.version }}.tar.gz
             ```
-
           draft: false
           prerelease: false
 
