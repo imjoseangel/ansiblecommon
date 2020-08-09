@@ -72,8 +72,6 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-    files: "README.md LICENSE ansible.cfg galaxy.yml"
-    directories: "inventories playbooks roles vars plugins"
 
     steps:
       - name: Checkout code
@@ -99,6 +97,9 @@ jobs:
           mkdir -p build/src
           cp ${{ files }} build/src
           cp -rf ${{ directories }} build/src
+        env:
+          files: "README.md LICENSE ansible.cfg galaxy.yml"
+          directories: "inventories playbooks roles vars plugins"
 
       - name: Build Ansible Collection
         run: ansible-galaxy collection build build/src --force
