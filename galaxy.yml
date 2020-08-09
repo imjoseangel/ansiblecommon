@@ -1,7 +1,7 @@
 ---
 namespace: "imjoseangel"
 name: "common"
-version: "0.1.2"
+version: "0.1.0"
 readme: "README.md"
 authors:
     - "Jose Angel Munoz <josea.munoz@gmail.com>"

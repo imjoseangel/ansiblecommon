@@ -74,6 +74,8 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
+      files: "README.md LICENSE ansible.cfg galaxy.yml"
+      directories: "inventories playbooks roles vars plugins"
 
     steps:
       - name: Checkout code
@@ -94,8 +96,14 @@ jobs:
           pip install --upgrade ansible
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Copy files and directories to source
+        run: |
+          mkdir -p build/src
+          cp ${{ files }} build/src
+          cp -rf ${{ directories }} build/src
+
       - name: Build Ansible Collection
-        run: ansible-galaxy collection build
+        run: ansible-galaxy collection build build/src --force
 
       - name: Deploy Ansible Collection
         run: ansible-galaxy collection publish imjoseangel-common-${{ steps.cversion.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
