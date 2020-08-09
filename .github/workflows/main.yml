@@ -13,27 +13,37 @@ jobs:
   sanity:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+
+      - name: Checkout release branch
+        uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.8"
+
       - name: Install Ansible
         run: pip install git+https://github.com/ansible/ansible.git@devel
+
       - name: Install dependencies
         run: make test-setup
+
       - name: Run sanity check
         run: make SANITY_OPTS="--local" PYTHON_VERSION="3.8" sanity
 
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout release branch
+        uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.8"
+
       - name: Install dependencies
         run: pip install black yamllint
+
       - name: Run linter
         run: make lint
