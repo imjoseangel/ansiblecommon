@@ -99,7 +99,7 @@ jobs:
           cp -rf $directories build/src
         env:
           files: "README.md LICENSE ansible.cfg galaxy.yml"
-          directories: "inventories playbooks roles vars plugins"
+          directories: "inventories playbooks roles vars"
 
       - name: Build Ansible Collection
         run: ansible-galaxy collection build build/src --force
