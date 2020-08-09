@@ -74,8 +74,8 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-      files: "README.md LICENSE ansible.cfg galaxy.yml"
-      directories: "inventories playbooks roles vars plugins"
+    files: "README.md LICENSE ansible.cfg galaxy.yml"
+    directories: "inventories playbooks roles vars plugins"
 
     steps:
       - name: Checkout code
