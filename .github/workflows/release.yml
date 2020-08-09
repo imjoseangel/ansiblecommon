@@ -58,6 +58,14 @@ jobs:
             ```sh
             ansible-galaxy collection install -r requirements.yml -f
             ```
+
+            The requirements.yml needs to have the following format and content:
+            ```yaml
+            ---
+            collections:
+                - https://github.com/imjoseangel/ansiblecommon/releases/download/v${{ steps.cversion.outputs.version }}/imjoseangel-common-${{ steps.cversion.outputs.version }}.tar.gz
+            ```
+
           draft: false
           prerelease: false
 
