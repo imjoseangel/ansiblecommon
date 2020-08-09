@@ -106,4 +106,4 @@ jobs:
         run: ansible-galaxy collection build build/src --force
 
       - name: Deploy Ansible Collection
-        run: ansible-galaxy collection publish imjoseangel-common-${{ steps.cversion.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+        run: ansible-galaxy collection publish imjoseangel-common-${{ steps.cversion.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }} --force
