@@ -22,7 +22,6 @@ help:
 	@echo "  lint           to run code linting"
 	@echo "  test           to run unit tests"
 	@echo "  sanity         to run santy tests"
-	@echo "  setup          to set up test, lint"
 	@echo "  test-setup     to install test dependencies"
 	@echo "  clean_<test>   to run a specific test playbook with the teardown and cleanup tags"
 	@echo "  dist           to build the collection artifact"
@@ -49,20 +48,6 @@ clean_%: FORCE $(MANIFEST)
 test-setup: requirements.txt
 	pip install --upgrade pip
 	pip install -r requirements.txt
-
-tests/playbooks/vars/server.yaml:
-	cp $@.example $@
-	@echo "For recording, please adjust $@ to match your reference server."
-
-$(MANIFEST): $(NAMESPACE)-$(NAME)-$(VERSION).tar.gz
-ifeq ($(COLLECTION_COMMAND),mazer)
-	# No idea, why this fails. But mazer is old and deprecated so unlikely to beeing fixed...
-	# mazer install --collections-path build/collections $<
-	-mkdir build/collections build/collections/ansible_collections build/collections/ansible_collections/$(NAMESPACE) build/collections/ansible_collections/$(NAMESPACE)/$(NAME)
-	tar xf $< -C build/collections/ansible_collections/$(NAMESPACE)/$(NAME)
-else
-	ansible-galaxy collection install -p build/collections $< --force
-endif
 
 build/src/%: % | build
 	cp $< $@
