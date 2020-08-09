@@ -4,7 +4,7 @@ VERSION := $(shell python -c 'import yaml; print(yaml.safe_load(open("galaxy.yml
 MANIFEST := build/collections/ansible_collections/$(NAMESPACE)/$(NAME)/MANIFEST.json
 
 PLUGIN_TYPES := $(filter-out __%,$(notdir $(wildcard plugins/*)))
-METADATA := galaxy.yml LICENSE README.md
+METADATA := galaxy.yml LICENSE README.md inventories playbooks roles vars
 $(foreach PLUGIN_TYPE,$(PLUGIN_TYPES),$(eval _$(PLUGIN_TYPE) := $(filter-out %__init__.py,$(wildcard plugins/$(PLUGIN_TYPE)/*.py))))
 DEPENDENCIES := $(METADATA) $(foreach PLUGIN_TYPE,$(PLUGIN_TYPES),$(_$(PLUGIN_TYPE)))
 
@@ -50,18 +50,14 @@ test-setup: requirements.txt
 	pip install -r requirements.txt
 
 build/src/%: % | build
-	cp $< $@
+	cp -r $< $@
 
 build:
 	-mkdir build build/src build/src/plugins $(addprefix build/src/plugins/,$(PLUGIN_TYPES))
 
 $(NAMESPACE)-$(NAME)-$(VERSION).tar.gz: $(addprefix build/src/,$(DEPENDENCIES)) | build
-ifeq ($(COLLECTION_COMMAND),mazer)
-	mazer build --collection-path=build/src
-	cp build/src/releases/$@ .
-else
-	ansible-galaxy collection build build/src --force
-endif
+
+	-ansible-galaxy collection build build/src --force
 
 dist: $(NAMESPACE)-$(NAME)-$(VERSION).tar.gz
 

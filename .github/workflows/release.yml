@@ -36,7 +36,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Build Ansible Collection
-        run: make dist
+        run: ansible-galaxy collection build
 
       - name: Create Release
         id: create_release
@@ -79,6 +79,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Get current version
+        id: cversion
+        run: echo "::set-output name=version::$(grep version galaxy.yml | awk -F'"' '{ print $2 }')"
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -91,7 +95,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Build Ansible Collection
-        run: make dist
+        run: ansible-galaxy collection build
 
       - name: Deploy Ansible Collection
-        run: make publish GALAXY_API_KEY=${{ secrets.GALAXY_API_KEY }}
+        run: ansible-galaxy collection publish imjoseangel-common-${{ steps.cversion.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
