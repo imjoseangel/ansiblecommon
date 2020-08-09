@@ -95,8 +95,8 @@ jobs:
       - name: Copy files and directories to source
         run: |
           mkdir -p build/src
-          cp ${{ files }} build/src
-          cp -rf ${{ directories }} build/src
+          cp $files build/src
+          cp -rf $directories build/src
         env:
           files: "README.md LICENSE ansible.cfg galaxy.yml"
           directories: "inventories playbooks roles vars plugins"
